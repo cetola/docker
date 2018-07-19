@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 
 MAINTAINER stephanoc@gmail.com 
 
-RUN apt-get update && apt-get install -y build-essential git vim nasm wget m4 bison flex uuid-dev python
+RUN apt-get update && apt-get install -y build-essential git vim nasm wget m4 bison flex uuid-dev python unzip
 
 # Add a known password
 RUN echo 'root:password' | chpasswd
@@ -14,21 +14,29 @@ ENV BINDIR ${HOMEDIR}/bin
 ENV TMPDIR ${HOMEDIR}/tmp
 ENV ACPICA acpica-unix-20180629
 ENV WORKDIR ${HOMEDIR}/workspace
+ENV MINNOWBIN ${HOMEDIR}/silicon
 
 # create dirs
 RUN useradd -ms /bin/bash $USERNAME
 RUN echo "$USERNAME:password" | chpasswd
 RUN mkdir -p ${WORKDIR}
-RUN mkdir ${BINDIR}
-RUN mkdir ${TMPDIR}
+RUN mkdir -p ${MINNOWBIN}
+RUN mkdir -p ${BINDIR}
+RUN mkdir -p ${TMPDIR}
 RUN chown -R $USERNAME:$USERNAME ${HOMEDIR}
 RUN chown -R $USERNAME:$USERNAME ${BINDIR}
 RUN chown -R $USERNAME:$USERNAME ${TMPDIR}
+RUN chown -R $USERNAME:$USERNAME ${MINNOWBIN}
+RUN chown -R $USERNAME:$USERNAME ${WORKDIR}
 
-# get the ASL compiler
+# get the ASL compiler and minnow binaries
 RUN wget https://acpica.org/sites/acpica/files/${ACPICA}.tar.gz -P ${TMPDIR}
 RUN tar -xf ${TMPDIR}/${ACPICA}.tar.gz -C ${TMPDIR}
+RUN wget https://firmware.intel.com/sites/default/files/minnowboard_max-0.98-binary.objects.zip -O ${TMPDIR}/minnow-bin.zip
+RUN unzip ${TMPDIR}/minnow-bin.zip -d ${TMPDIR}
 RUN chown -R $USERNAME:$USERNAME ${TMPDIR}
+RUN mv ${TMPDIR}/Minnow*/* ${MINNOWBIN}
+RUN chown -R $USERNAME:$USERNAME ${MINNOWBIN}
 
 # compile the ASL compiler and tools
 WORKDIR ${TMPDIR}/${ACPICA}

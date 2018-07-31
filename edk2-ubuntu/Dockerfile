@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 
 MAINTAINER stephanoc@gmail.com 
 
-RUN apt-get update && apt-get install -y build-essential git vim nasm wget m4 bison flex uuid-dev python unzip
+RUN apt-get update && apt-get install -y build-essential git vim nasm wget m4 bison flex uuid-dev python unzip qemu
 
 # Add a known password
 RUN echo 'root:password' | chpasswd

@@ -13,6 +13,7 @@ ENV HOMEDIR /home/${USERNAME}
 ENV BINDIR ${HOMEDIR}/bin
 ENV TMPDIR ${HOMEDIR}/tmp
 ENV ACPICA acpica-unix-20180629
+ENV MINNOWOBJ minnowboard_max-0.98-binary.objects.zip
 ENV WORKDIR ${HOMEDIR}/workspace
 ENV MINNOWBIN ${HOMEDIR}/silicon
 
@@ -32,7 +33,7 @@ RUN chown -R $USERNAME:$USERNAME ${WORKDIR}
 # get the ASL compiler and minnow binaries
 RUN wget https://acpica.org/sites/acpica/files/${ACPICA}.tar.gz -P ${TMPDIR}
 RUN tar -xf ${TMPDIR}/${ACPICA}.tar.gz -C ${TMPDIR}
-RUN wget https://firmware.intel.com/sites/default/files/minnowboard_max-0.98-binary.objects.zip -O ${TMPDIR}/minnow-bin.zip
+RUN wget https://firmware.intel.com/sites/default/files/${MINNOWOBJ} -O ${TMPDIR}/minnow-bin.zip
 RUN unzip ${TMPDIR}/minnow-bin.zip -d ${TMPDIR}
 RUN chown -R $USERNAME:$USERNAME ${TMPDIR}
 RUN mv ${TMPDIR}/Minnow*/* ${MINNOWBIN}
@@ -44,9 +45,10 @@ RUN make
 RUN PREFIX=${HOMEDIR} make install
 RUN chown -R $USERNAME:$USERNAME ${BINDIR}
 
-# setup BINDIR
+# add $BINDIR to $PATH and change $PS1
 RUN touch ${HOMEDIR}/.bashrc
 RUN echo "PATH=$PATH:~/bin" >> ${HOMEDIR}/.bashrc
+RUN echo 'export PS1="[\u@edk2-ubuntu] \W # "' >> ${HOMEDIR}/.bashrc
 
 # Make ssh dir
 RUN mkdir ${HOMEDIR}/.ssh/

@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-MAINTAINER stephanoc@gmail.com 
+MAINTAINER stephano.cetola@linux.intel.com
 
 RUN apt-get update && apt-get install -y build-essential git vim nasm wget m4 bison flex uuid-dev python unzip qemu
 
@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y build-essential git vim nasm wget m4 bi
 RUN echo 'root:password' | chpasswd
 
 # setup env
-ENV USERNAME stephano 
+ENV USERNAME dockeruser 
 ENV HOMEDIR /home/${USERNAME}
 ENV BINDIR ${HOMEDIR}/bin
 ENV TMPDIR ${HOMEDIR}/tmp
